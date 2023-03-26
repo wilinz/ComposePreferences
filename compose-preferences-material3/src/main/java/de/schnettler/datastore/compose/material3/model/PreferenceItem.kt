@@ -14,18 +14,26 @@ sealed class Preference {
      * A single [Preference] item
      */
     sealed class PreferenceItem<T> : Preference() {
-        abstract val summary: String?
+        abstract val summary: String
         abstract val singleLineTitle: Boolean
-        abstract val icon: @Composable (() -> Unit)?
+
+        /**
+         * Represents the keys of a SwitchPreference that controls the state of this Preference.
+         * When the corresponding switch is turned off, this Preference is disabled and is unable to be modified.
+         */
+        abstract val dependency: List<PreferenceRequest<Boolean>>
+
+        abstract val icon: @Composable () -> Unit
 
         /**
          * 	A basic [PreferenceItem] that only displays text.
          */
         data class TextPreference(
             override val title: String,
-            override val summary: String? = null,
+            override val summary: String,
             override val singleLineTitle: Boolean,
-            override val icon: @Composable (() -> Unit)? = null,
+            override val dependency: List<PreferenceRequest<Boolean>> = emptyList(),
+            override val icon: @Composable () -> Unit,
             override val enabled: Boolean = true,
 
             val onClick: () -> Unit = {}
@@ -37,9 +45,10 @@ sealed class Preference {
         data class SwitchPreference(
             val request: PreferenceRequest<Boolean>,
             override val title: String,
-            override val summary: String? = null,
+            override val summary: String,
             override val singleLineTitle: Boolean,
-            override val icon: @Composable (() -> Unit)? = null,
+            override val dependency: List<PreferenceRequest<Boolean>> = emptyList(),
+            override val icon: @Composable () -> Unit,
             override val enabled: Boolean = true,
         ) : PreferenceItem<Boolean>()
 
@@ -50,9 +59,10 @@ sealed class Preference {
         data class ListPreference(
             val request: PreferenceRequest<String>,
             override val title: String,
-            override val summary: String? = null,
+            override val summary: String,
             override val singleLineTitle: Boolean,
-            override val icon: @Composable (() -> Unit)? = null,
+            override val dependency: List<PreferenceRequest<Boolean>> = emptyList(),
+            override val icon: @Composable () -> Unit,
             override val enabled: Boolean = true,
 
             val entries: Map<String, String>,
@@ -65,9 +75,10 @@ sealed class Preference {
         data class MultiSelectListPreference(
             val request: PreferenceRequest<Set<String>>,
             override val title: String,
-            override val summary: String? = null,
+            override val summary: String,
             override val singleLineTitle: Boolean,
-            override val icon: @Composable (() -> Unit)? = null,
+            override val dependency: List<PreferenceRequest<Boolean>> = emptyList(),
+            override val icon: @Composable () -> Unit,
             override val enabled: Boolean = true,
 
             val entries: Map<String, String>,
@@ -79,9 +90,10 @@ sealed class Preference {
         data class SeekBarPreference(
             val request: PreferenceRequest<Float>,
             override val title: String,
-            override val summary: String? = null,
+            override val summary: String,
             override val singleLineTitle: Boolean,
-            override val icon: @Composable (() -> Unit)? = null,
+            override val dependency: List<PreferenceRequest<Boolean>> = emptyList(),
+            override val icon: @Composable () -> Unit,
             override val enabled: Boolean = true,
 
             val valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
@@ -96,9 +108,10 @@ sealed class Preference {
         data class DropDownMenuPreference(
             val request: PreferenceRequest<String>,
             override val title: String,
-            override val summary: String? = null,
+            override val summary: String,
             override val singleLineTitle: Boolean,
-            override val icon: @Composable (() -> Unit)? = null,
+            override val dependency: List<PreferenceRequest<Boolean>> = emptyList(),
+            override val icon: @Composable () -> Unit,
             override val enabled: Boolean = true,
 
             val entries: Map<String, String>,
